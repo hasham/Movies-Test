@@ -1,0 +1,146 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    namespace 'com.example.moviestest'
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.example.moviestest"
+        minSdk 21
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        Properties properties = new Properties()
+        if (project.rootProject.file('local.properties').canRead()) {
+            properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        }
+        dev {
+            versionCode 1
+            versionName "1.0"
+            applicationId "com.example.moviestestdev"
+            dimension "default"
+            buildConfigField 'String', 'API_KEY', properties.getProperty('API_KEY', '"xxx"')
+            buildConfigField 'String', 'API_URL','"https://api.themoviedb.org/3/"'
+        }
+        staging {
+            versionCode 1
+            versionName "1.0"
+            applicationId "com.example.moviesteststaging"
+            dimension "default"
+            buildConfigField 'String', 'API_KEY', properties.getProperty('API_KEY', '"xxx"')
+            buildConfigField 'String', 'API_URL','"https://api.themoviedb.org/3/"'
+        }
+        production {
+            versionCode 1
+            versionName "1.0"
+            applicationId "com.example.moviestest"
+            dimension "default"
+            buildConfigField 'String', 'API_KEY', properties.getProperty('API_KEY', '"xxx"')
+            buildConfigField 'String', 'API_URL','"https://api.themoviedb.org/3/"'
+        }
+    }
+    // Remove mockRelease as it's not needed.
+    android.variantFilter { variant ->
+        if (variant.buildType.name == 'release'
+                && variant.flavors[0].name == 'mock') {
+            variant.ignore = true
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    lint {
+        abortOnError true
+        checkDependencies true
+        ignoreWarnings true
+        quiet true
+    }
+
+}
+
+dependencies {
+// Core
+    implementation "androidx.core:core-ktx:$core_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.activity:activity-ktx:$activity_version"
+
+    // UI
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
+
+    //  Lifecycle Components
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    //  Logging
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
+    // Hilt DI
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // For instrumentation tests
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // For local unit tests
+    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptTest "com.google.dagger:hilt-compiler:$hilt_version"
+
+    //  Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$httplogging_version"
+    implementation "com.google.code.gson:gson:$json_version"
+    //MockWebserver
+    testImplementation "com.squareup.okhttp3:mockwebserver:$mock_web_server"
+
+    // Test
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$extjunit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressocore_version"
+    testImplementation 'org.mockito:mockito-core:2.28.2'
+    androidTestImplementation 'org.mockito:mockito-android:2.24.5'
+
+    // Needed for unit testing API
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+}
+
+kapt {
+    correctErrorTypes true
+}
