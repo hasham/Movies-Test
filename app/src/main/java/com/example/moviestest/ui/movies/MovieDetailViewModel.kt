@@ -10,13 +10,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel @Inject constructor(private val repository: MovieRepository) :
+class MovieDetailViewModel @Inject constructor(private val repository: MovieRepository) :
     ViewModel() {
 
-    fun getMoviesList() = liveData(Dispatchers.IO) {
+    fun getMovieDetail(movie_id: Int) = liveData(Dispatchers.IO) {
         emit(Resource.loading(data = null))
         try {
-            emit(Resource.success(data = repository.getMovies()))
+            emit(Resource.success(data = repository.getMovieDetail(movie_id)))
         } catch (exception: Exception) {
             emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
             Timber.e(exception)

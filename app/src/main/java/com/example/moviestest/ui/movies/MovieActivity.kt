@@ -1,6 +1,7 @@
 package com.example.moviestest.ui.movies
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.moviestest.common.Constants
 import com.example.moviestest.common.Status
 import com.example.moviestest.data.models.Movie
 import com.example.moviestest.data.models.MovieListResponse
@@ -44,7 +46,6 @@ class MovieActivity : AppCompatActivity(), MoviesListAdapter.OnItemClickListener
        
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun setUpObservers() {
         viewModel.getMoviesList().observe(this, Observer {
             it?.let { resource ->
@@ -68,8 +69,6 @@ class MovieActivity : AppCompatActivity(), MoviesListAdapter.OnItemClickListener
 
     private fun retrieveList(movies: MovieListResponse) {
 
-      
-
         moviesListAdapter.apply {
             moviesListAdapter.submitList(movies.results)
         }
@@ -77,8 +76,8 @@ class MovieActivity : AppCompatActivity(), MoviesListAdapter.OnItemClickListener
 
     override fun onItemClick(item: Movie) {
 
-//        val intent = Intent(this@MovieActivity, FriendDetailActivity::class.java)
-//        intent.putExtra(Constants.FRIENDS, item)
-//        startActivity(intent)
+        val intent = Intent(this@MovieActivity, MovieDetailActivity::class.java)
+        intent.putExtra(Constants.MOVIE_ID_KEY, item.id)
+        startActivity(intent)
     }
 }

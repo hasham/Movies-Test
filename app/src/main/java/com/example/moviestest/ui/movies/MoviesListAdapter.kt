@@ -21,7 +21,7 @@ class MoviesListAdapter @Inject constructor(val clickListener: OnItemClickListen
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ), clickListener
         )
     }
 
@@ -29,7 +29,7 @@ class MoviesListAdapter @Inject constructor(val clickListener: OnItemClickListen
         holder.bind(getItem(position))
     }
 
-    class ItemViewHolder(private val binding: ListItemMovieBinding) :
+    class ItemViewHolder(private val binding: ListItemMovieBinding, private val clickListener: OnItemClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(movie: Movie) {
@@ -45,7 +45,7 @@ class MoviesListAdapter @Inject constructor(val clickListener: OnItemClickListen
             }
 
             binding.root.setOnClickListener {
-//                clickListener.onItemClick(movie)
+                clickListener.onItemClick(movie)
             }
 
         }
